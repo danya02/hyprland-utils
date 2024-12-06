@@ -1,0 +1,9 @@
+[package]
+name = "eww-progs"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+chrono = "0.4.38"
+clap = { version = "4.5.23", features = ["derive"] }
+tokio = { version = "1.42.0", features = ["full"] }
