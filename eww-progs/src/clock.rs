@@ -1,4 +1,5 @@
-pub async fn clock() {
+#[tokio::main]
+pub async fn clock() -> ! {
     let mut delay_ms;
     loop {
         let current_time = chrono::Local::now();

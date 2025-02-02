@@ -3,16 +3,11 @@ pub mod clock;
 pub mod workspaces;
 use clap::Parser;
 
-#[tokio::main]
-async fn main() {
+fn main() -> anyhow::Result<()> {
     let args = args::Cmd::parse();
 
     match args {
-        args::Cmd::Clock => {
-            clock::clock().await;
-        }
-        args::Cmd::Workspaces => {
-            workspaces::workspaces().await;
-        }
+        args::Cmd::Clock => clock::clock(),
+        args::Cmd::HyprWorkspaces => workspaces::workspaces(),
     }
 }

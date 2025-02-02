@@ -5,6 +5,6 @@ pub enum Cmd {
     #[command(name = "clock")]
     Clock,
 
-    #[command(name = "workspaces")]
-    Workspaces,
+    #[command(name = "hypr-workspaces")]
+    HyprWorkspaces,
 }
