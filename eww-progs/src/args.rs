@@ -4,4 +4,7 @@ use clap::Parser;
 pub enum Cmd {
     #[command(name = "clock")]
     Clock,
+
+    #[command(name = "workspaces")]
+    Workspaces,
 }

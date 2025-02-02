@@ -8,6 +8,9 @@ pub async fn clock() {
         delay_ms = 1000 - current_millis;
         delay_ms = delay_ms.min(1000);
 
-        tokio::time::sleep(tokio::time::Duration::from_millis(delay_ms.try_into().unwrap())).await;
+        tokio::time::sleep(tokio::time::Duration::from_millis(
+            delay_ms.try_into().unwrap(),
+        ))
+        .await;
     }
 }
