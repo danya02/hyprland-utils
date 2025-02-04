@@ -7,4 +7,7 @@ pub enum Cmd {
 
     #[command(name = "hypr-workspaces")]
     HyprWorkspaces,
+
+    #[command(name = "pulse-volume")]
+    Volume,
 }
