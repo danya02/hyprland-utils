@@ -10,4 +10,7 @@ pub enum Cmd {
 
     #[command(name = "pulse-volume")]
     Volume,
+
+    #[command(name = "proc-count")]
+    ProcCount,
 }
