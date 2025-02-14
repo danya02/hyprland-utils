@@ -18,13 +18,24 @@ fn main() {
 
     // Then, open the stream and start playing the sound.
     // This will create a new application, so we can then boost the volume.
-    let (_stream, stream_handle) = OutputStream::try_default().unwrap();
+    let (stream, stream_handle) = OutputStream::try_default().unwrap();
 
     if let Err(why) = volume::boost_volume_of_apps_since(&mut handler, &snapshot) {
         eprintln!("Failed to boost volume of apps, restoring snapshot early: {why}");
         volume::apply_snapshot(&mut handler, &snapshot)
             .expect("Failed to restore snapshot -- volume may be inconsistent!");
     }
+
+    ctrlc::set_handler({
+        let snapshot = snapshot.clone();
+        move || {
+            println!("Shutting down early, restoring snapshot");
+            let mut handler = pulsectl::controllers::SinkController::create().unwrap();
+
+            volume::apply_snapshot(&mut handler, &snapshot).unwrap();
+        }
+    })
+    .expect("cannot set ctrl-c handler");
 
     if let Err(why) = play_audio(&args.music_file, &stream_handle) {
         eprintln!("Failed to play audio: {why}");

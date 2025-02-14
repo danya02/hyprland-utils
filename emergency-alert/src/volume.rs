@@ -7,7 +7,7 @@ use pulsectl::controllers::{
     types::{ApplicationInfo, DevState, DeviceInfo},
 };
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct VolumeConfigSnapshot {
     pub applications: Vec<ApplicationInfo>,
     pub devices: Vec<DeviceInfo>,
