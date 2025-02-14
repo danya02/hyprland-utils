@@ -33,6 +33,7 @@ fn main() {
             let mut handler = pulsectl::controllers::SinkController::create().unwrap();
 
             volume::apply_snapshot(&mut handler, &snapshot).unwrap();
+            std::process::exit(0);
         }
     })
     .expect("cannot set ctrl-c handler");
