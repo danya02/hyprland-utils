@@ -13,5 +13,6 @@ fn main() -> anyhow::Result<()> {
         args::Cmd::HyprWorkspaces => workspaces::workspaces(),
         args::Cmd::Volume => volume::volume(),
         args::Cmd::ProcCount => proc::proc_count(),
+        args::Cmd::ProcRate => proc::proc_rate(),
     }
 }

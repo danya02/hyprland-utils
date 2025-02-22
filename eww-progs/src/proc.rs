@@ -49,3 +49,61 @@ pub fn proc_count() -> anyhow::Result<()> {
         std::thread::sleep(duration);
     }
 }
+
+#[derive(serde::Serialize, Default, Debug)]
+struct ProcRates {
+    max_id: u64,
+    avg_1m_increase_per_sec: f64,
+    avg_5m_increase_per_sec: f64,
+    avg_15m_increase_per_sec: f64,
+}
+
+pub fn proc_rate() -> anyhow::Result<()> {
+    let mut max_id = 0;
+
+    let duration = std::time::Duration::from_millis(100);
+    let intervals_per_1m = 60 * 1000 / duration.as_millis() as isize;
+    let intervals_per_5m = 5 * 60 * 1000 / duration.as_millis() as isize;
+    let intervals_per_15m = 15 * 60 * 1000 / duration.as_millis() as isize;
+    let mut buffer = vec![0; intervals_per_15m as usize];
+    let mut cursor = 0;
+    let len = buffer.len() as isize;
+
+    let wrap = |x: isize| -> usize {
+        // Wrap the cursor position to the size of the buffer
+        ((x + len) % len) as usize
+    };
+
+    loop {
+        let processes = std::fs::read_dir("/proc")?;
+        for process in processes {
+            let process = process?;
+            if let Ok(id) = process.file_name().to_str().unwrap().parse::<u64>() {
+                max_id = max_id.max(id);
+            }
+        }
+
+        buffer[cursor] = max_id;
+        let icursor = cursor as isize;
+
+        let increase_1m =
+            ((buffer[cursor] - buffer[wrap(icursor - intervals_per_1m)]) as f64) / 60.0;
+        let increase_5m =
+            ((buffer[cursor] - buffer[wrap(icursor - intervals_per_5m)]) as f64) / 300.0;
+        let increase_15m =
+            ((buffer[cursor] - buffer[wrap(icursor - intervals_per_15m)]) as f64) / 900.0;
+
+        cursor = wrap(icursor + 1);
+
+        let rates = ProcRates {
+            max_id,
+            avg_1m_increase_per_sec: increase_1m,
+            avg_5m_increase_per_sec: increase_5m,
+            avg_15m_increase_per_sec: increase_15m,
+        };
+
+        println!("{}", serde_json::to_string(&rates).unwrap());
+
+        std::thread::sleep(duration);
+    }
+}

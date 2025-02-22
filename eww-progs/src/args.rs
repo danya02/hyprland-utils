@@ -13,4 +13,7 @@ pub enum Cmd {
 
     #[command(name = "proc-count")]
     ProcCount,
+
+    #[command(name = "proc-rate")]
+    ProcRate,
 }
